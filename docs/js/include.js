@@ -32,6 +32,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     };
 
+    const openMailClient = (name, email, message) => {
+      const subject = encodeURIComponent("Contact from portfolio — " + name);
+      const body = encodeURIComponent(
+        "Name: " + name + "\nEmail: " + email + "\n\n" + message
+      );
+      window.open(`mailto:${fallbackMail}?subject=${subject}&body=${body}`);
+      setMessage("Opening mail client...", true);
+    };
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const name = ((form.name && form.name.value) || "").trim();
@@ -43,40 +52,46 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      const endpoint = form.getAttribute("data-endpoint") || "";
+      const endpoint = (form.getAttribute("data-endpoint") || "").trim();
+      const isFormSubmit = endpoint.includes("formsubmit.co");
 
-      // Fallback to mailto if endpoint not set or still the placeholder
-      if (!endpoint || endpoint.includes("your-form-id")) {
-        const subject = encodeURIComponent("Contact from portfolio — " + name);
-        const body = encodeURIComponent(
-          "Name: " + name + "\nEmail: " + email + "\n\n" + message
-        );
-        window.location.href = `mailto:${fallbackMail}?subject=${subject}&body=${body}`;
+      // If no endpoint configured, always fallback to mail client
+      if (!endpoint) {
+        openMailClient(name, email, message);
         return;
       }
 
-      // POST to endpoint: try JSON (preferred by Formspree), fallback to form data
-      try {
-        const payload = { name, email, message };
-        let res = await fetch(endpoint, {
+      const sendFormData = async () => {
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("message", message);
+        return fetch(endpoint, {
           method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
+          body: formData,
+          headers: { Accept: "application/json" },
         });
+      };
 
-        if (!res.ok && res.status === 415) {
-          const formData = new FormData();
-          formData.append("name", name);
-          formData.append("email", email);
-          formData.append("message", message);
+      // POST to endpoint: JSON first (Formspree), FormData for FormSubmit or 415 fallback
+      try {
+        let res;
+        if (isFormSubmit) {
+          res = await sendFormData();
+        } else {
+          const payload = { name, email, message };
           res = await fetch(endpoint, {
             method: "POST",
-            body: formData,
-            headers: { Accept: "application/json" },
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
           });
+
+          if (!res.ok && res.status === 415) {
+            res = await sendFormData();
+          }
         }
 
         const ctype = res.headers.get("content-type") || "";
@@ -99,15 +114,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             body && body.error
               ? body.error
               : `Sending failed (status ${res.status}).`;
-          setMessage(
-            errMsg + " Please try again or use the mailto fallback.",
-            false
-          );
+          // Fall back to mail client on failure
+          openMailClient(name, email, message);
+          setMessage(errMsg + " Falling back to your mail client...", false);
         }
       } catch (err) {
         console.error("Form submission error", err);
+        openMailClient(name, email, message);
         setMessage(
-          "Network error — could not send message. Check console for details.",
+          "Network error — opening your mail client as fallback.",
           false
         );
       }
