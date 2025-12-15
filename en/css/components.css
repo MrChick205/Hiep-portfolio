@@ -1,31 +1,36 @@
 /* components.css — buttons, cards, skills, timeline, contact */
 .btn {
   display: inline-block;
-  background: var(--accent);
-  color: #fff;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  color: #0b1224;
+  padding: 0.7rem 1.15rem;
+  border-radius: 12px;
   text-decoration: none;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 30px rgba(168, 85, 247, 0.25);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.2s ease;
 }
 .btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(11, 11, 39, 0.08);
+  box-shadow: 0 14px 30px rgba(109, 40, 217, 0.28);
 }
 .btn.outline {
   background: transparent;
-  border: 1px solid rgba(15, 23, 36, 0.08);
+  border: 1px solid var(--border);
   color: var(--text);
   margin-left: 0.5rem;
+  box-shadow: none;
 }
 .meta-list {
   list-style: none;
   padding: 0;
-  margin-top: 1rem;
+  margin: 0.5rem 0 0;
   color: var(--muted);
 }
 .meta-list li {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.3rem;
 }
 
 /* Skills */
@@ -36,20 +41,22 @@
 }
 .skill {
   background: var(--card);
-  padding: 1rem;
-  border-radius: 10px;
-  border: 1px solid rgba(15, 23, 36, 0.04);
+  padding: 1.1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
 }
 .skill-head {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.6rem;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--text);
 }
 .bar {
   height: 10px;
-  background: #f3f4f6;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
   overflow: hidden;
 }
 .bar > div {
@@ -61,28 +68,43 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 1.2rem;
   grid-auto-rows: 1fr;
   align-items: stretch;
 }
 .card {
   background: var(--card);
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 6px 18px rgba(12, 20, 30, 0.04);
+  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.22s ease, box-shadow 0.22s ease,
+    border-color 0.22s ease;
+  border: 1px solid var(--border);
   height: 100%;
 }
 .card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 18px 36px rgba(12, 20, 30, 0.08);
+  box-shadow: var(--shadow-soft);
+  border-color: rgba(109, 40, 217, 0.28);
 }
 .card-media {
   aspect-ratio: 16/9;
   min-height: 160px;
   overflow: hidden;
+  position: relative;
+}
+.card-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.12));
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.card:hover .card-media::after {
+  opacity: 1;
 }
 .card-media img {
   width: 100%;
@@ -95,10 +117,10 @@
   transform: scale(1.05);
 }
 .card-body {
-  padding: 0.9rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.55rem;
 }
 .card-body h3 {
   margin: 0;
@@ -107,24 +129,65 @@
   margin: 0;
   color: var(--muted);
 }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(34, 211, 238, 0.16);
+  color: var(--accent-2);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  width: fit-content;
+}
 .card-body .tech {
   font-size: 0.85rem;
   color: var(--accent);
+  font-weight: 700;
 }
 .card-body .link {
   display: inline-block;
   margin-top: auto;
   color: var(--accent);
   text-decoration: none;
+  font-weight: 700;
 }
 
 /* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 1rem;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(var(--accent), var(--accent-2));
+  opacity: 0.4;
+}
 .timeline .item {
   background: var(--card);
   padding: 1rem;
-  border-radius: 10px;
-  margin-bottom: 0.8rem;
-  border: 1px solid rgba(15, 23, 36, 0.04);
+  border-radius: 12px;
+  margin-bottom: 0.9rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+.timeline .item::before {
+  content: "";
+  position: absolute;
+  left: -1.25rem;
+  top: 1.2rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 0 4px rgba(109, 40, 217, 0.12);
 }
 .timeline .muted {
   color: var(--muted);
@@ -133,7 +196,12 @@
 
 /* Contact */
 .contact form {
-  max-width: 720px;
+  max-width: 780px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.4rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
 }
 .form-row {
   display: flex;
@@ -141,23 +209,28 @@
 }
 .form-row input {
   flex: 1;
-  padding: 0.6rem;
-  border-radius: 8px;
-  border: 1px solid rgba(15, 23, 36, 0.06);
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
 }
 textarea {
   width: 100%;
-  padding: 0.6rem;
-  border-radius: 8px;
-  border: 1px solid rgba(15, 23, 36, 0.06);
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
   resize: vertical;
+  font-family: inherit;
+  color: var(--text);
 }
 .form-message {
   margin-top: 0.6rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 .form-message.ok {
-  color: green;
+  color: #15803d;
 }
 .form-message.error {
   color: #b91c1c;
@@ -170,9 +243,11 @@ textarea {
 
 /* Footer */
 .site-footer {
-  border-top: 1px solid rgba(15, 23, 36, 0.04);
-  padding: 1.2rem 0;
+  border-top: 1px solid var(--border);
+  padding: 1.6rem 0;
   margin-top: 3rem;
+  background: rgba(11, 18, 36, 0.92);
+  backdrop-filter: blur(8px);
 }
 .footer-inner {
   display: flex;
@@ -183,4 +258,5 @@ textarea {
   margin-left: 1rem;
   color: var(--muted);
   text-decoration: none;
+  font-weight: 700;
 }
