@@ -1,0 +1,52 @@
+/* utils.css — responsive and animations */
+/* Reveal animations */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* small UI touches */
+.nav a {
+  transition: color 0.18s ease;
+}
+.profile {
+  transition: transform 0.6s ease;
+}
+.profile:hover {
+  transform: translateY(-4px) rotate(-1deg);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .hero {
+    flex-direction: column-reverse;
+  }
+  .hero-right {
+    width: 240px;
+  }
+}
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .skill-list {
+    grid-template-columns: 1fr;
+  }
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-row {
+    flex-direction: column;
+  }
+  .nav {
+    display: none;
+  }
+}
